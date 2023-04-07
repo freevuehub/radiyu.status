@@ -1,0 +1,22 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "email": "hackish113@gmail.com",
+    "name": "freevue",
+    "url": "https://freevue.dev"
+  },
+  "devDependencies": {
+    "electron": "^24.0.0",
+    "electron-builder": "^23.6.0"
+  },
+  "scripts": {
+    "build": "electron-builder",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  }
+}
