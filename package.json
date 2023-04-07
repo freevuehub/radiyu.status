@@ -1,5 +1,5 @@
 {
-  "name": "머찐 라디유!",
+  "name": "radiyu.status",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -18,5 +18,10 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
+  },
+  "build": {
+    "appId": "com.radiyu.status",
+    "productName": "머찐 라디유!",
+    "copyright": "Copyright © 2023 freevue"
   }
 }
