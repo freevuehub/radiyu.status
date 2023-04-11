@@ -16,49 +16,25 @@ const postAccessToken = async () => {
   
   return data
 }
-const getStatus = async (token) => {
-  const response = await fetch(
-    `https://api.twitch.tv/helix/streams?user_login=${process.env.TWITCH_USER_ID}`,
-    {
-      method: 'GET',
-      headers: {
-        'Client-ID': process.env.TWITCH_CLIENT_ID,
-        'Authorization': `Bearer ${token}`
-      },
-    }
-  )
-  const { data } = await response.json()
-  
-  if (data.length === 0) {
-    return setTimeout(() => {
-      getStatus(token)
-    }, 5000)
-  } else {
-    notification.show()
-  
-    notification.on('click', async () => {
-      await shell.openExternal('https://www.twitch.tv/radiyu')
-    })
-
-    return data
-  }
-}
-
-const iconPath = path.join(__dirname, 'path/icon.png');
 
 app.setName('웡웡')
+app.setLoginItemSettings({
+  openAtLogin: true,
+})
 
 const createWindow = () => {
   window = new BrowserWindow({
     show: false,
+    icon: path.join(__dirname, 'assets/icons/png/icon.png')
   })
   tray = new Tray(
-    nativeImage.createFromPath(iconPath)
+    nativeImage.createFromPath(path.join(__dirname, 'assets/icons/png/icon.png'))
   )
   notification = new Notification({
-     title: '머찐 라디유!',
-     body: '웡웡이들 집합해라!'
-   })
+    icon: nativeImage.createFromPath(path.join(__dirname, 'assets/icons/foo.png')),
+    title: '머찐 라디유!',
+    body: '웡웡이들 집합해라!'
+  })
 
   window.setTitle('머찐 라디유!')
 
@@ -71,12 +47,58 @@ const createWindow = () => {
   ]))
 }
 
+
 app.whenReady().then(async () => {
+  let isOnline = false
+  let isNoti = false
+
+  const getStatus = async (token) => {
+    const response = await fetch(
+      `https://api.twitch.tv/helix/streams?user_login=${process.env.TWITCH_USER_ID}`,
+      {
+        method: 'GET',
+        headers: {
+          'Client-ID': process.env.TWITCH_CLIENT_ID,
+          'Authorization': `Bearer ${token}`
+        },
+      }
+    )
+    const { data } = await response.json()
+
+    isOnline = data.length !== 0
+
+    if (!isOnline) isNoti = false
+
+    if (isNoti) {
+      return setTimeout(() => {
+        getStatus(token)
+      }, 3000)
+    }
+    
+    if (isOnline) {
+      isNoti = true
+
+      notification.show()
+    
+      notification.on('click', async () => {
+        await shell.openExternal('https://www.twitch.tv/radiyu')
+      })
+    }
+    
+    return setTimeout(() => {
+      getStatus(token)
+    }, 3000)
+  }
+
   createWindow()
 
   const { access_token } = await postAccessToken()
 
   await getStatus(access_token)
+  
+  notification.on('click', async () => {
+    await shell.openExternal('https://www.twitch.tv/radiyu')
+  })
   
   app.hide()
   app.dock.hide()

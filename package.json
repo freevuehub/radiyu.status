@@ -21,8 +21,9 @@
     "electron-squirrel-startup": "^1.0.0"
   },
   "build": {
-    "appId": "com.radiyu.status",
+    "appId": "com.radiyu.status.app",
     "productName": "머찐 라디유!",
-    "copyright": "Copyright © 2023 freevue"
+    "copyright": "Copyright © 2023 freevue",
+    "icon": "./assets/icons/png/icon.png"
   }
 }
